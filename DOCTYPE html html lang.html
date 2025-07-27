@@ -8,29 +8,130 @@
     body {
       font-family: sans-serif;
       padding: 20px;
+      background: #f5f5f5;
+    }
+    .controls {
+      margin-bottom: 20px;
+    }
+    .btn {
+      padding: 8px 16px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #007acc;
+      color: white;
+    }
+    .btn:hover {
+      background: #005fa3;
+    }
+    .freq-section {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .controls input {
+      padding: 8px;
+      margin-right: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 150px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .section-header h4 {
+      margin: 0;
+      color: #333;
+    }
+    .reset-section {
+      padding: 4px 8px;
+      font-size: 12px;
+      background: #dc3545;
+    }
+    .reset-section:hover {
+      background: #c82333;
     }
     .slider {
-      width: 300px;
+      width: 200px;
+      height: 8px;
+      -webkit-appearance: none;
+      background: #ddd;
+      border-radius: 4px;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #007acc;
+      border-radius: 50%;
+      cursor: pointer;
     }
     .freq {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
+    }
+    .freq label {
+      width: 80px;
+      font-size: 12px;
+    }
+    .freq span {
+      width: 50px;
+      font-size: 12px;
+      text-align: right;
+    }
+    .reset-freq {
+      padding: 2px 6px;
+      font-size: 10px;
+      background: #dc3545;
+      margin-left: 5px;
+    }
+    .reset-freq:hover {
+      background: #c82333;
+    }
+    .output-section {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     textarea {
       width: 100%;
-      height: 150px;
-      margin-top: 20px;
+      height: 120px;
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      font-family: monospace;
     }
   </style>
 </head>
 <body>
   <h2>🎛️ GraphicEQ Editor for Wavelet</h2>
   <p>Adjust the sliders to set dB value for each frequency.</p>
+  
+  <div class="controls">
+    <button class="btn" onclick="resetAll()">Reset All</button>
+    <input type="file" id="fileInput" accept=".txt" style="display: none;" onchange="loadFile()">
+    <button class="btn" onclick="document.getElementById('fileInput').click()">Load File</button>
+    <input type="text" id="filename" placeholder="EQ Name" value="Wavelet custom eq">
+    <button class="btn" onclick="downloadTxt()">Download .txt</button>
+  </div>
+  
   <div id="sliders"></div>
-  <h3>📋 GraphicEQ Output</h3>
-  <textarea id="output" readonly></textarea>
+  
+  <div class="output-section">
+    <h3>📋 GraphicEQ Output</h3>
+    <button class="btn" onclick="copyOutput()">Copy</button>
+    <textarea id="output" readonly></textarea>
+  </div>
 
   <script>
     const freqs = [
@@ -51,45 +152,185 @@
     const output = document.getElementById("output");
     let values = {};
 
+    // Initialize all frequencies to 0
     freqs.forEach(freq => {
       values[freq] = 0;
-      const container = document.createElement("div");
-      container.className = "freq";
+    });
 
-      const label = document.createElement("label");
-      label.textContent = `${freq} Hz`;
+    const sections = [
+      { name: "🔊 Bass (20-250 Hz)", start: 0, end: 32 },
+      { name: "🎵 Low Mids (250-500 Hz)", start: 32, end: 50 },
+      { name: "🎤 Mids (500-2000 Hz)", start: 50, end: 78 },
+      { name: "✨ High Mids (2-8 kHz)", start: 78, end: 108 },
+      { name: "🔔 Treble (8-20 kHz)", start: 108, end: freqs.length }
+    ];
 
-      const slider = document.createElement("input");
-      slider.type = "range";
-      slider.min = -20;
-      slider.max = 200;
-      slider.step = 0.1;
-      slider.value = 0;
-      slider.className = "slider";
-      slider.oninput = () => {
-        values[freq] = parseFloat(slider.value);
-        updateOutput();
-      };
+    sections.forEach((section, sectionIndex) => {
+      const sectionDiv = document.createElement("div");
+      sectionDiv.className = "freq-section";
+      
+      const headerDiv = document.createElement("div");
+      headerDiv.className = "section-header";
+      
+      const title = document.createElement("h4");
+      title.textContent = section.name;
+      
+      const resetBtn = document.createElement("button");
+      resetBtn.className = "btn reset-section";
+      resetBtn.textContent = "Reset";
+      resetBtn.onclick = () => resetSection(sectionIndex);
+      
+      headerDiv.appendChild(title);
+      headerDiv.appendChild(resetBtn);
+      sectionDiv.appendChild(headerDiv);
 
-      const valDisplay = document.createElement("span");
-      valDisplay.textContent = "0 dB";
-      slider.addEventListener("input", () => {
-        valDisplay.textContent = slider.value + " dB";
-      });
+      for (let i = section.start; i < section.end && i < freqs.length; i++) {
+        const freq = freqs[i];
+        
+        const container = document.createElement("div");
+        container.className = "freq";
 
-      container.appendChild(label);
-      container.appendChild(slider);
-      container.appendChild(valDisplay);
-      slidersDiv.appendChild(container);
+        const label = document.createElement("label");
+        label.textContent = `${freq} Hz`;
+
+        const slider = document.createElement("input");
+        slider.type = "range";
+        slider.min = -20;
+        slider.max = 20;
+        slider.step = 0.1;
+        slider.value = 0;
+        slider.className = "slider";
+        slider.dataset.freq = freq;
+        slider.oninput = () => {
+          values[freq] = parseFloat(slider.value);
+          updateOutput();
+        };
+
+        const valDisplay = document.createElement("span");
+        valDisplay.textContent = "0 dB";
+        slider.addEventListener("input", () => {
+          valDisplay.textContent = slider.value + " dB";
+        });
+
+        const resetFreqBtn = document.createElement("button");
+        resetFreqBtn.className = "btn reset-freq";
+        resetFreqBtn.textContent = "R";
+        resetFreqBtn.onclick = () => {
+          slider.value = 0;
+          values[freq] = 0;
+          valDisplay.textContent = "0 dB";
+          updateOutput();
+        };
+
+        container.appendChild(label);
+        container.appendChild(slider);
+        container.appendChild(valDisplay);
+        container.appendChild(resetFreqBtn);
+        sectionDiv.appendChild(container);
+      }
+      
+      slidersDiv.appendChild(sectionDiv);
     });
 
     function updateOutput() {
-      const eqString = freqs.map(f => `${f} ${values[f]}`).join("; ");
+      const eqString = freqs.map(f => `${f} ${values[f] || 0}`).join("; ");
       output.value = `GraphicEQ: ${eqString}`;
     }
+
+    function resetSection(sectionIndex) {
+      const section = sections[sectionIndex];
+      for (let i = section.start; i < section.end && i < freqs.length; i++) {
+        const freq = freqs[i];
+        const slider = document.querySelector(`input[data-freq="${freq}"]`);
+        if (slider) {
+          slider.value = 0;
+          values[freq] = 0;
+          slider.nextElementSibling.textContent = "0 dB";
+        }
+      }
+      updateOutput();
+    }
+
+    function resetAll() {
+      document.querySelectorAll('.slider').forEach(slider => {
+        slider.value = 0;
+        values[slider.dataset.freq] = 0;
+        slider.nextElementSibling.textContent = "0 dB";
+      });
+      updateOutput();
+    }
+
+    function downloadTxt() {
+      const filename = document.getElementById('filename').value || 'Wavelet custom eq';
+      const content = output.value;
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename + '.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function loadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const content = e.target.result;
+        parseAndLoadEQ(content);
+      };
+      reader.readAsText(file);
+    }
+
+    function parseAndLoadEQ(content) {
+      // Extract GraphicEQ data from content
+      const graphicEQMatch = content.match(/GraphicEQ:\s*(.+)/);
+      if (!graphicEQMatch) {
+        alert('No GraphicEQ data found in file');
+        return;
+      }
+
+      const eqData = graphicEQMatch[1];
+      const pairs = eqData.split(';').map(pair => pair.trim());
+      
+      pairs.forEach(pair => {
+        const [freq, value] = pair.split(' ');
+        const frequency = parseFloat(freq);
+        const dbValue = parseFloat(value);
+        
+        if (!isNaN(frequency) && !isNaN(dbValue)) {
+          values[frequency] = dbValue;
+          const slider = document.querySelector(`input[data-freq="${frequency}"]`);
+          if (slider) {
+            slider.value = dbValue;
+            slider.nextElementSibling.textContent = dbValue + ' dB';
+          }
+        }
+      });
+      
+      updateOutput();
+    }
+
+    function copyOutput() {
+      output.select();
+      document.execCommand('copy');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && document.activeElement.classList.contains('slider')) {
+        e.preventDefault();
+        const slider = document.activeElement;
+        slider.value = 0;
+        values[slider.dataset.freq] = 0;
+        slider.nextElementSibling.textContent = "0 dB";
+        updateOutput();
+      }
+    });
 
     updateOutput();
   </script>
 </body>
 </html>
-
