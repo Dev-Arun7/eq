@@ -13,7 +13,6 @@
             <div class="controls-container">
                 <h2>🎛️ GraphicEQ Editor for Wavelet</h2>
                 <p>Adjust the sliders to set dB value for each frequency.</p>
-                <p class="author">Created by Arun Balakrishnan</p>
                 
                 <div class="controls">
                     <button class="btn" onclick="resetAll()">Reset All</button>
@@ -40,16 +39,8 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/chart.js"></script>
     <script src="js/eq.js"></script>
     <script src="js/utils.js"></script>
-    <script src="js/chart.js"></script>
-    <script>
-        // Initialize after all scripts are loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            initChart();
-            updateOutput();
-        });
-    </script>
 </body>
 </html>
