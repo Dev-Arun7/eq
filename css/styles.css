@@ -1,0 +1,182 @@
+body {
+    font-family: sans-serif;
+    padding: 20px;
+    background: #f5f5f5;
+}
+
+/* Header Styles */
+.header-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #f5f5f5;
+    padding: 20px 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 50px;
+}
+
+.controls-container {
+    flex: 1;
+    margin-right: 20px;
+    min-width: 300px;
+}
+
+.graph-container {
+    width: 400px;
+    height: 200px;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-left: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Content Styles */
+.content-wrapper {
+    margin-top: 280px;
+    padding: 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Controls Styles */
+.controls {
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #007acc;
+    color: white;
+}
+
+.btn:hover {
+    background: #005fa3;
+}
+
+.controls input {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 150px;
+}
+
+/* Frequency Section Styles */
+.freq-section {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.section-header h4 {
+    margin: 0;
+    color: #333;
+}
+
+.freq {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.freq label {
+    width: 80px;
+    font-size: 12px;
+}
+
+.freq span {
+    width: 50px;
+    font-size: 12px;
+    text-align: right;
+}
+
+/* Reset Button Styles */
+.reset-section {
+    padding: 4px 8px;
+    font-size: 12px;
+    background: #dc3545;
+}
+
+.reset-section:hover {
+    background: #c82333;
+}
+
+.reset-freq {
+    padding: 2px 6px;
+    font-size: 10px;
+    background: #dc3545;
+    margin-left: 5px;
+}
+
+.reset-freq:hover {
+    background: #c82333;
+}
+
+/* Slider Styles */
+.slider {
+    width: 200px;
+    height: 8px;
+    -webkit-appearance: none;
+    background: #ddd;
+    border-radius: 4px;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #007acc;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Output Section Styles */
+.output-section {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+textarea {
+    width: 100%;
+    height: 120px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    font-family: monospace;
+}
+.author {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    font-style: italic;
+}
