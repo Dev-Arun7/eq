@@ -197,3 +197,21 @@ function resetAll() {
     });
     updateOutput();
 }
+
+function playFrequency() {
+    const frequency = document.getElementById('frequencySlider').value;
+    startTone(parseFloat(frequency));
+    document.getElementById('playBtn').textContent = '⏸ Pause';
+}
+
+function stopFrequency() {
+    stopTone();
+    document.getElementById('playBtn').textContent = '▶ Play';
+}
+
+function updatePlaybackFrequency(frequency) {
+    document.getElementById('currentFreq').textContent = frequency + ' Hz';
+    if (isPlaying) {
+        updateFrequency(parseFloat(frequency));
+    }
+}

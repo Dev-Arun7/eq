@@ -236,3 +236,25 @@ textarea {
 .value-btn:hover {
     background: #e9ecef;
 }
+.audio-controls {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#frequencySlider {
+    width: 200px;
+}
+
+#volumeSlider {
+    width: 80px;
+}
+
+#currentFreq {
+    min-width: 60px;
+    font-weight: bold;
+}
