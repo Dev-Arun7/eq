@@ -33,9 +33,9 @@ freqs.forEach(freq => {
 
 // Main update function
 function updateOutput() {
-    const eqString = freqs.map(f => `${f} ${values[f] || 0}`).join("; ");
+    const eqString = freqs.map(f => `${f} ${parseFloat((values[f] || 0).toFixed(1))}`).join("; ");
     output.value = `GraphicEQ: ${eqString}`;
-    chart.data.datasets[0].data = freqs.map(f => values[f] || 0);
+    chart.data.datasets[0].data = freqs.map(f => parseFloat((values[f] || 0).toFixed(1)));
     chart.update('none');
 }
 
@@ -76,16 +76,82 @@ sections.forEach((section, sectionIndex) => {
         slider.value = 0;
         slider.className = "slider";
         slider.dataset.freq = freq;
+
         slider.oninput = () => {
             values[freq] = parseFloat(slider.value);
             updateOutput();
+            updateEQFilter(freq, parseFloat(slider.value));
         };
 
-        const valDisplay = document.createElement("span");
-        valDisplay.textContent = "0 dB";
+        // Create container for input group
+        const valueContainer = document.createElement("div");
+        valueContainer.className = "value-container";
+
+        // Decrease button
+        const decreaseBtn = document.createElement("button");
+        decreaseBtn.textContent = "−";
+        decreaseBtn.className = "value-btn decrease-btn";
+
+        // Input field
+        const valInput = document.createElement("input");
+        valInput.type = "number";
+        valInput.min = -20;
+        valInput.max = 20;
+        valInput.step = 0.1;
+        valInput.value = (0).toFixed(1);  // becomes "0.0"
+        valInput.className = "value-input";
+
+        // Increase button
+        const increaseBtn = document.createElement("button");
+        increaseBtn.textContent = "+";
+        increaseBtn.className = "value-btn increase-btn";
+
+        // Two-way binding: slider updates input
         slider.addEventListener("input", () => {
-            valDisplay.textContent = slider.value + " dB";
+            valInput.value = parseFloat(slider.value).toFixed(1);
         });
+
+        // Two-way binding: input updates slider
+        valInput.addEventListener("input", () => {
+            const newValue = parseFloat(valInput.value);
+            if (newValue >= -20 && newValue <= 20) {
+                const rounded = parseFloat(newValue.toFixed(1));
+                valInput.value = rounded.toFixed(1);
+                slider.value = rounded;
+                values[freq] = rounded;
+                updateOutput();
+                updateEQFilter(freq, rounded); // ADD THIS LINE
+            }
+        });
+
+
+        // Decrease button click
+        decreaseBtn.addEventListener("click", () => {
+            const newValue = Math.max(-20, parseFloat(valInput.value) - 0.1);
+            const rounded = parseFloat(newValue.toFixed(1));
+            valInput.value = rounded.toFixed(1);
+            slider.value = rounded;
+            values[freq] = rounded;
+            updateOutput();
+            updateEQFilter(freq, rounded); // ADD THIS LINE
+        });
+
+
+        // Increase button click
+        increaseBtn.addEventListener("click", () => {
+            const newValue = Math.min(20, parseFloat(valInput.value) + 0.1);
+            const rounded = parseFloat(newValue.toFixed(1));
+            valInput.value = rounded.toFixed(1);
+            slider.value = rounded;
+            values[freq] = rounded;
+            updateOutput();
+            updateEQFilter(freq, rounded); // ADD THIS LINE
+        });
+
+        // Add elements to container
+        valueContainer.appendChild(decreaseBtn);
+        valueContainer.appendChild(valInput);
+        valueContainer.appendChild(increaseBtn);
 
         const resetFreqBtn = document.createElement("button");
         resetFreqBtn.className = "btn reset-freq";
@@ -93,13 +159,14 @@ sections.forEach((section, sectionIndex) => {
         resetFreqBtn.onclick = () => {
             slider.value = 0;
             values[freq] = 0;
-            valDisplay.textContent = "0 dB";
+            valInput.value = (0).toFixed(1);  // becomes "0.0"
             updateOutput();
+            updateEQFilter(freq, 0);
         };
 
         container.appendChild(label);
         container.appendChild(slider);
-        container.appendChild(valDisplay);
+        container.appendChild(valueContainer);
         container.appendChild(resetFreqBtn);
         sectionDiv.appendChild(container);
     }
@@ -116,7 +183,11 @@ function resetSection(sectionIndex) {
         if (slider) {
             slider.value = 0;
             values[freq] = 0;
-            slider.nextElementSibling.textContent = "0 dB";
+            updateEQFilter(freq, 0);
+            const valueInput = slider.nextElementSibling.querySelector('.value-input');
+            if (valueInput) {
+                valueInput.value = 0;
+            }
         }
     }
     updateOutput();
@@ -124,9 +195,94 @@ function resetSection(sectionIndex) {
 
 function resetAll() {
     document.querySelectorAll('.slider').forEach(slider => {
+        const freq = slider.dataset.freq; // ADD THIS LINE - define freq
         slider.value = 0;
-        values[slider.dataset.freq] = 0;
-        slider.nextElementSibling.textContent = "0 dB";
+        values[freq] = 0;
+        updateEQFilter(freq, 0);
+        const valueInput = slider.nextElementSibling.querySelector('.value-input');
+        if (valueInput) {
+            valueInput.value = (0).toFixed(1);
+        }
     });
     updateOutput();
 }
+
+function playFrequency() {
+    const frequency = document.getElementById('frequencySlider').value;
+    startTone(parseFloat(frequency));
+    document.getElementById('playBtn').textContent = '⏸ Pause';
+}
+
+function stopFrequency() {
+    stopTone();
+    document.getElementById('playBtn').textContent = '▶ Play';
+}
+
+function updatePlaybackFrequency(frequency) {
+    document.getElementById('currentFreq').textContent = frequency + ' Hz';
+    if (isPlaying) {
+        updateFrequency(parseFloat(frequency));
+    }
+}
+
+
+function toggleMP3Playback() {
+    if (isMP3Playing) {
+        pauseMP3();
+    } else {
+        playMP3();
+    }
+}
+
+function stopMP3AndReset() {
+    stopMP3();
+    mp3PauseTime = 0;
+    document.getElementById('playMP3Btn').textContent = '▶ Play';
+    document.getElementById('mp3Progress').value = 0;
+    document.getElementById('mp3CurrentTime').textContent = '0:00';
+}
+
+function seekMP3(progressPercent) {
+    if (mp3Buffer) {
+        mp3PauseTime = (progressPercent / 100) * mp3Buffer.duration;
+        if (isMP3Playing) {
+            playMP3(); // Restart from new position
+        }
+    }
+}
+
+
+function toggleMP3Playback() {
+    if (isMP3Playing) {
+        pauseMP3();
+    } else {
+        playMP3();
+    }
+}
+
+function stopMP3AndReset() {
+    stopMP3();
+    mp3PauseTime = 0;
+    document.getElementById('playMP3Btn').textContent = '▶ Play';
+    document.getElementById('mp3Progress').value = 0;
+    document.getElementById('mp3CurrentTime').textContent = '0:00';
+}
+
+function seekMP3(progressPercent) {
+    if (mp3Buffer) {
+        mp3PauseTime = (progressPercent / 100) * mp3Buffer.duration;
+        if (isMP3Playing) {
+            playMP3();
+        }
+    }
+}
+
+// File upload handler - ADD THIS
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('mp3FileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            loadMP3File(file);
+        }
+    });
+});

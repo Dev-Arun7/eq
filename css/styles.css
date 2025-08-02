@@ -14,6 +14,8 @@ body {
     padding: 20px 0;
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-height: 70vh; /* Add this */
+    overflow-y: auto; /* Add this */
 }
 
 .header-content {
@@ -43,7 +45,7 @@ body {
 
 /* Content Styles */
 .content-wrapper {
-    margin-top: 280px;
+    margin-top: 550px; /* Adjust this */
     padding: 20px;
     max-width: 1200px;
     margin-left: auto;
@@ -178,5 +180,134 @@ textarea {
     color: #666;
     margin-top: -10px;
     margin-bottom: 15px;
+    font-style: italic;
+}
+.value-input {
+    width: 50px;
+    padding: 2px 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.value-input:focus {
+    outline: none;
+    border-color: #007acc;
+}
+.value-container {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.value-input {
+    width: 50px;
+    height: 22px;
+    padding: 2px 4px;
+    border: 1px solid #ddd;
+    border-radius: 0;
+    text-align: center;
+    font-size: 12px;
+    border-left: none;
+    border-right: none;
+}
+
+.value-btn {
+    width: 22px;
+    height: 22px;
+    border: 1px solid #ddd;
+    background: #f8f9fa;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.decrease-btn {
+    border-radius: 4px 0 0 4px;
+}
+
+.increase-btn {
+    border-radius: 0 4px 4px 0;
+}
+
+.value-btn:hover {
+    background: #e9ecef;
+}
+.audio-controls {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#frequencySlider {
+    width: 200px;
+}
+
+#volumeSlider {
+    width: 80px;
+}
+
+#currentFreq {
+    min-width: 60px;
+    font-weight: bold;
+}
+
+/* ---------- MP3 SECTION ------------ */
+.mp3-player {
+    margin: 20px 0;
+    padding: 15px;
+    border: 2px solid #007acc;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.mp3-upload {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mp3-controls {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mp3-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#mp3Progress {
+    flex: 1;
+    height: 6px;
+}
+
+#mp3VolumeSlider {
+    width: 100px;
+}
+
+#mp3Status {
+    font-weight: bold;
+    color: #007acc;
+}
+
+.mp3-info {
+    font-size: 12px;
+    color: #666;
+    margin: 0;
     font-style: italic;
 }
