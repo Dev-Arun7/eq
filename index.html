@@ -33,6 +33,38 @@
                             oninput="setVolume(this.value)">
                         <label>Vol</label>
                     </div>
+
+
+                    <!-- MP3 play section -->
+                    <div class="mp3-player">
+                        <h3>🎵 MP3 Player with Real-time EQ</h3>
+                        
+                        <!-- File Upload -->
+                        <div class="mp3-upload">
+                            <input type="file" id="mp3FileInput" accept=".mp3,.wav,.m4a" style="display: none;">
+                            <button class="btn" onclick="document.getElementById('mp3FileInput').click()">📁 Load MP3</button>
+                            <span id="mp3Status">No file loaded</span>
+                        </div>
+                        
+                        <!-- Player Controls -->
+                        <div class="mp3-controls">
+                            <button class="btn" id="playMP3Btn" onclick="toggleMP3Playback()" disabled>▶ Play</button>
+                            <button class="btn" onclick="stopMP3AndReset()">⏹ Stop</button>
+                            <input type="range" id="mp3VolumeSlider" min="0" max="1" step="0.01" value="0.5" 
+                                oninput="setMP3Volume(this.value)">
+                            <label>Volume</label>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mp3-progress">
+                            <span id="mp3CurrentTime">0:00</span>
+                            <input type="range" id="mp3Progress" min="0" max="100" value="0" 
+                                oninput="seekMP3(this.value)">
+                            <span id="mp3Duration">0:00</span>
+                        </div>
+                        
+                        <p class="mp3-info">Move any EQ slider to hear real-time changes!</p>
+                    </div>
                 </div>
             </div>
             <div class="graph-container">
@@ -62,12 +94,14 @@
     <script src="js/utils.js"></script>
     <script src="js/chart.js"></script>
     <script src="js/audio.js"></script>
+    <script src="js/mp3-eq.js"></script>
     <script>
         // Initialize after all scripts are loaded
         document.addEventListener('DOMContentLoaded', () => {
             initChart();
             updateOutput();
             initAudio();
+            initMP3Audio();
         });
     </script>
 </body>

@@ -14,6 +14,8 @@ body {
     padding: 20px 0;
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-height: 70vh; /* Add this */
+    overflow-y: auto; /* Add this */
 }
 
 .header-content {
@@ -43,7 +45,7 @@ body {
 
 /* Content Styles */
 .content-wrapper {
-    margin-top: 280px;
+    margin-top: 550px; /* Adjust this */
     padding: 20px;
     max-width: 1200px;
     margin-left: auto;
@@ -257,4 +259,55 @@ textarea {
 #currentFreq {
     min-width: 60px;
     font-weight: bold;
+}
+
+/* ---------- MP3 SECTION ------------ */
+.mp3-player {
+    margin: 20px 0;
+    padding: 15px;
+    border: 2px solid #007acc;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.mp3-upload {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mp3-controls {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mp3-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#mp3Progress {
+    flex: 1;
+    height: 6px;
+}
+
+#mp3VolumeSlider {
+    width: 100px;
+}
+
+#mp3Status {
+    font-weight: bold;
+    color: #007acc;
+}
+
+.mp3-info {
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+    font-style: italic;
 }

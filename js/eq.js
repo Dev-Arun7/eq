@@ -76,9 +76,11 @@ sections.forEach((section, sectionIndex) => {
         slider.value = 0;
         slider.className = "slider";
         slider.dataset.freq = freq;
+
         slider.oninput = () => {
             values[freq] = parseFloat(slider.value);
             updateOutput();
+            updateEQFilter(freq, parseFloat(slider.value));
         };
 
         // Create container for input group
@@ -118,6 +120,7 @@ sections.forEach((section, sectionIndex) => {
                 slider.value = rounded;
                 values[freq] = rounded;
                 updateOutput();
+                updateEQFilter(freq, rounded); // ADD THIS LINE
             }
         });
 
@@ -130,6 +133,7 @@ sections.forEach((section, sectionIndex) => {
             slider.value = rounded;
             values[freq] = rounded;
             updateOutput();
+            updateEQFilter(freq, rounded); // ADD THIS LINE
         });
 
 
@@ -141,6 +145,7 @@ sections.forEach((section, sectionIndex) => {
             slider.value = rounded;
             values[freq] = rounded;
             updateOutput();
+            updateEQFilter(freq, rounded); // ADD THIS LINE
         });
 
         // Add elements to container
@@ -156,6 +161,7 @@ sections.forEach((section, sectionIndex) => {
             values[freq] = 0;
             valInput.value = (0).toFixed(1);  // becomes "0.0"
             updateOutput();
+            updateEQFilter(freq, 0);
         };
 
         container.appendChild(label);
@@ -177,6 +183,7 @@ function resetSection(sectionIndex) {
         if (slider) {
             slider.value = 0;
             values[freq] = 0;
+            updateEQFilter(freq, 0);
             const valueInput = slider.nextElementSibling.querySelector('.value-input');
             if (valueInput) {
                 valueInput.value = 0;
@@ -188,8 +195,10 @@ function resetSection(sectionIndex) {
 
 function resetAll() {
     document.querySelectorAll('.slider').forEach(slider => {
+        const freq = slider.dataset.freq; // ADD THIS LINE - define freq
         slider.value = 0;
-        values[slider.dataset.freq] = 0;
+        values[freq] = 0;
+        updateEQFilter(freq, 0);
         const valueInput = slider.nextElementSibling.querySelector('.value-input');
         if (valueInput) {
             valueInput.value = (0).toFixed(1);
@@ -215,3 +224,65 @@ function updatePlaybackFrequency(frequency) {
         updateFrequency(parseFloat(frequency));
     }
 }
+
+
+function toggleMP3Playback() {
+    if (isMP3Playing) {
+        pauseMP3();
+    } else {
+        playMP3();
+    }
+}
+
+function stopMP3AndReset() {
+    stopMP3();
+    mp3PauseTime = 0;
+    document.getElementById('playMP3Btn').textContent = '▶ Play';
+    document.getElementById('mp3Progress').value = 0;
+    document.getElementById('mp3CurrentTime').textContent = '0:00';
+}
+
+function seekMP3(progressPercent) {
+    if (mp3Buffer) {
+        mp3PauseTime = (progressPercent / 100) * mp3Buffer.duration;
+        if (isMP3Playing) {
+            playMP3(); // Restart from new position
+        }
+    }
+}
+
+
+function toggleMP3Playback() {
+    if (isMP3Playing) {
+        pauseMP3();
+    } else {
+        playMP3();
+    }
+}
+
+function stopMP3AndReset() {
+    stopMP3();
+    mp3PauseTime = 0;
+    document.getElementById('playMP3Btn').textContent = '▶ Play';
+    document.getElementById('mp3Progress').value = 0;
+    document.getElementById('mp3CurrentTime').textContent = '0:00';
+}
+
+function seekMP3(progressPercent) {
+    if (mp3Buffer) {
+        mp3PauseTime = (progressPercent / 100) * mp3Buffer.duration;
+        if (isMP3Playing) {
+            playMP3();
+        }
+    }
+}
+
+// File upload handler - ADD THIS
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('mp3FileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            loadMP3File(file);
+        }
+    });
+});
