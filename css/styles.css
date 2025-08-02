@@ -180,3 +180,59 @@ textarea {
     margin-bottom: 15px;
     font-style: italic;
 }
+.value-input {
+    width: 50px;
+    padding: 2px 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.value-input:focus {
+    outline: none;
+    border-color: #007acc;
+}
+.value-container {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.value-input {
+    width: 50px;
+    height: 22px;
+    padding: 2px 4px;
+    border: 1px solid #ddd;
+    border-radius: 0;
+    text-align: center;
+    font-size: 12px;
+    border-left: none;
+    border-right: none;
+}
+
+.value-btn {
+    width: 22px;
+    height: 22px;
+    border: 1px solid #ddd;
+    background: #f8f9fa;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.decrease-btn {
+    border-radius: 4px 0 0 4px;
+}
+
+.increase-btn {
+    border-radius: 0 4px 4px 0;
+}
+
+.value-btn:hover {
+    background: #e9ecef;
+}

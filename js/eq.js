@@ -33,9 +33,9 @@ freqs.forEach(freq => {
 
 // Main update function
 function updateOutput() {
-    const eqString = freqs.map(f => `${f} ${values[f] || 0}`).join("; ");
+    const eqString = freqs.map(f => `${f} ${parseFloat((values[f] || 0).toFixed(1))}`).join("; ");
     output.value = `GraphicEQ: ${eqString}`;
-    chart.data.datasets[0].data = freqs.map(f => values[f] || 0);
+    chart.data.datasets[0].data = freqs.map(f => parseFloat((values[f] || 0).toFixed(1)));
     chart.update('none');
 }
 
@@ -81,11 +81,72 @@ sections.forEach((section, sectionIndex) => {
             updateOutput();
         };
 
-        const valDisplay = document.createElement("span");
-        valDisplay.textContent = "0 dB";
+        // Create container for input group
+        const valueContainer = document.createElement("div");
+        valueContainer.className = "value-container";
+
+        // Decrease button
+        const decreaseBtn = document.createElement("button");
+        decreaseBtn.textContent = "−";
+        decreaseBtn.className = "value-btn decrease-btn";
+
+        // Input field
+        const valInput = document.createElement("input");
+        valInput.type = "number";
+        valInput.min = -20;
+        valInput.max = 20;
+        valInput.step = 0.1;
+        valInput.value = (0).toFixed(1);  // becomes "0.0"
+        valInput.className = "value-input";
+
+        // Increase button
+        const increaseBtn = document.createElement("button");
+        increaseBtn.textContent = "+";
+        increaseBtn.className = "value-btn increase-btn";
+
+        // Two-way binding: slider updates input
         slider.addEventListener("input", () => {
-            valDisplay.textContent = slider.value + " dB";
+            valInput.value = parseFloat(slider.value).toFixed(1);
         });
+
+        // Two-way binding: input updates slider
+        valInput.addEventListener("input", () => {
+            const newValue = parseFloat(valInput.value);
+            if (newValue >= -20 && newValue <= 20) {
+                const rounded = parseFloat(newValue.toFixed(1));
+                valInput.value = rounded.toFixed(1);
+                slider.value = rounded;
+                values[freq] = rounded;
+                updateOutput();
+            }
+        });
+
+
+        // Decrease button click
+        decreaseBtn.addEventListener("click", () => {
+            const newValue = Math.max(-20, parseFloat(valInput.value) - 0.1);
+            const rounded = parseFloat(newValue.toFixed(1));
+            valInput.value = rounded.toFixed(1);
+            slider.value = rounded;
+            values[freq] = rounded;
+            updateOutput();
+        });
+
+
+        // Increase button click
+        increaseBtn.addEventListener("click", () => {
+            const newValue = Math.min(20, parseFloat(valInput.value) + 0.1);
+            const rounded = parseFloat(newValue.toFixed(1));
+            valInput.value = rounded.toFixed(1);
+            slider.value = rounded;
+            values[freq] = rounded;
+            updateOutput();
+        });
+
+        // Add elements to container
+        valueContainer.appendChild(decreaseBtn);
+        valueContainer.appendChild(valInput);
+        valueContainer.appendChild(increaseBtn);
 
         const resetFreqBtn = document.createElement("button");
         resetFreqBtn.className = "btn reset-freq";
@@ -93,13 +154,13 @@ sections.forEach((section, sectionIndex) => {
         resetFreqBtn.onclick = () => {
             slider.value = 0;
             values[freq] = 0;
-            valDisplay.textContent = "0 dB";
+            valInput.value = (0).toFixed(1);  // becomes "0.0"
             updateOutput();
         };
 
         container.appendChild(label);
         container.appendChild(slider);
-        container.appendChild(valDisplay);
+        container.appendChild(valueContainer);
         container.appendChild(resetFreqBtn);
         sectionDiv.appendChild(container);
     }
@@ -116,7 +177,10 @@ function resetSection(sectionIndex) {
         if (slider) {
             slider.value = 0;
             values[freq] = 0;
-            slider.nextElementSibling.textContent = "0 dB";
+            const valueInput = slider.nextElementSibling.querySelector('.value-input');
+            if (valueInput) {
+                valueInput.value = 0;
+            }
         }
     }
     updateOutput();
@@ -126,7 +190,10 @@ function resetAll() {
     document.querySelectorAll('.slider').forEach(slider => {
         slider.value = 0;
         values[slider.dataset.freq] = 0;
-        slider.nextElementSibling.textContent = "0 dB";
+        const valueInput = slider.nextElementSibling.querySelector('.value-input');
+        if (valueInput) {
+            valueInput.value = (0).toFixed(1);
+        }
     });
     updateOutput();
 }
