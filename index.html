@@ -59,27 +59,6 @@
                     </div>
                 </div>
 
-                <!-- Frequency Generator -->
-                <div class="control-card">
-                    <h3>Frequency Generator</h3>
-                    <div class="audio-controls">
-                        <div class="playback-controls">
-                            <button class="btn-round" onclick="playFrequency()" id="playBtn">▶</button>
-                            <button class="btn-round btn-stop" onclick="stopFrequency()" id="stopBtn">⏹</button>
-                        </div>
-                        <div class="slider-group">
-                            <input type="range" id="frequencySlider" min="10" max="20000" value="440" 
-                                oninput="updatePlaybackFrequency(this.value)" class="slider">
-                            <span id="currentFreq" class="freq-display">440 Hz</span>
-                        </div>
-                        <div class="volume-control">
-                            <input type="range" id="volumeSlider" min="0" max="0.3" step="0.01" value="0.1"
-                                oninput="setVolume(this.value)" class="slider slider-small">
-                            <span class="label">Vol</span>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- MP3 Player -->
                 <div class="control-card">
                     <h3>MP3 Player</h3>
@@ -108,6 +87,28 @@
                     </div>
                     
                     <div class="mp3-info">Move any EQ slider to hear real-time changes</div>
+                </div>
+
+
+                <!-- Frequency Generator -->
+                <div class="control-card">
+                    <h3>Frequency Generator</h3>
+                    <div class="audio-controls">
+                        <div class="playback-controls">
+                            <button class="btn-round" onclick="playFrequency()" id="playBtn">▶</button>
+                            <button class="btn-round btn-stop" onclick="stopFrequency()" id="stopBtn">⏹</button>
+                        </div>
+                        <div class="slider-group">
+                            <input type="range" id="frequencySlider" min="10" max="20000" value="440" 
+                                oninput="updatePlaybackFrequency(this.value)" class="slider">
+                            <span id="currentFreq" class="freq-display">440 Hz</span>
+                        </div>
+                        <div class="volume-control">
+                            <input type="range" id="volumeSlider" min="0" max="0.3" step="0.01" value="0.1"
+                                oninput="setVolume(this.value)" class="slider slider-small">
+                            <span class="label">Vol</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Footer -->
