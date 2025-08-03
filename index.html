@@ -1,102 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GraphicEQ Editor</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="header-fixed">
-        <div class="header-content">
-            <div class="controls-container">
-                <h2>🎛️ GraphicEQ Editor for Wavelet</h2>
-                <p>Adjust the sliders to set dB value for each frequency.</p>
-                <p class="author">Created by Arun Balakrishnan</p>
+    <div class="layout">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>GraphicEQ Editor</h1>
+                <p>Professional audio equalizer for Wavelet</p>
+                <div class="author">Created by Arun Balakrishnan</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel - Sliders -->
+            <div class="left-panel">
+                <div id="sliders" class="sliders-container"></div>
                 
-                <div class="controls">
-                    <button class="btn" onclick="resetAll()">Reset All</button>
-                    <input type="file" id="fileInput" accept=".txt" style="display: none;" onchange="loadFile()">
-                    <button class="btn" onclick="document.getElementById('fileInput').click()">Load File</button>
-                    <input type="text" id="filename" placeholder="EQ Name" value="Wavelet custom eq">
-                    <button class="btn" onclick="downloadTxt()">Download .txt</button>
-                    <button class="btn" onclick="smoothEQ()">Smooth</button>
-                    <!-- frequency play section -->
-                    <div class="audio-controls">
-                        <button class="btn" onclick="playFrequency()" id="playBtn">▶ Play</button>
-                        <button class="btn" onclick="stopFrequency()" id="stopBtn">⏹ Stop</button>
-                        <input type="range" id="frequencySlider" min="10" max="20000" value="440" 
-                            oninput="updatePlaybackFrequency(this.value)">
-                        <span id="currentFreq">440 Hz</span>
-                        <input type="range" id="volumeSlider" min="0" max="0.3" step="0.01" value="0.1"
-                            oninput="setVolume(this.value)">
-                        <label>Vol</label>
-                    </div>
-
-
-                    <!-- MP3 play section -->
-                    <div class="mp3-player">
-                        <h3>🎵 MP3 Player with Real-time EQ</h3>
-                        
-                        <!-- File Upload -->
-                        <div class="mp3-upload">
-                            <input type="file" id="mp3FileInput" accept=".mp3,.wav,.m4a" style="display: none;">
-                            <button class="btn" onclick="document.getElementById('mp3FileInput').click()">📁 Load MP3</button>
-                            <span id="mp3Status">No file loaded</span>
+                <!-- Output Section -->
+                <div class="output-section">
+                    <div class="output-card">
+                        <div class="output-header">
+                            <h3>GraphicEQ Output</h3>
+                            <button class="btn btn-small" onclick="copyOutput()">Copy</button>
                         </div>
-                        
-                        <!-- Player Controls -->
-                        <div class="mp3-controls">
-                            <button class="btn" id="playMP3Btn" onclick="toggleMP3Playback()" disabled>▶ Play</button>
-                            <button class="btn" onclick="stopMP3AndReset()">⏹ Stop</button>
-                            <input type="range" id="mp3VolumeSlider" min="0" max="1" step="0.01" value="0.5" 
-                                oninput="setMP3Volume(this.value)">
-                            <label>Volume</label>
-                        </div>
-                        
-                        <!-- Progress Bar -->
-                        <div class="mp3-progress">
-                            <span id="mp3CurrentTime">0:00</span>
-                            <input type="range" id="mp3Progress" min="0" max="100" value="0" 
-                                oninput="seekMP3(this.value)">
-                            <span id="mp3Duration">0:00</span>
-                        </div>
-                        
-                        <p class="mp3-info">Move any EQ slider to hear real-time changes!</p>
+                        <textarea id="output" readonly class="output-textarea"></textarea>
                     </div>
                 </div>
             </div>
-            <div class="graph-container">
-                <canvas id="eqGraph"></canvas>
+
+            <!-- Right Panel - Controls -->
+            <div class="right-panel">
+                <!-- Graph Section -->
+                <div class="graph-section">
+                    <div class="graph-controls">
+                        <button class="btn btn-accent" onclick="smoothEQ()">Smooth</button>
+                        <button class="btn btn-secondary" onclick="resetAll()">Full Reset</button>
+                    </div>
+                    <div class="graph-container">
+                        <canvas id="eqGraph"></canvas>
+                    </div>
+                </div>
+
+                <!-- File Controls -->
+                <div class="control-card">
+                    <div class="file-controls">
+                        <input type="file" id="fileInput" accept=".txt" style="display: none;" onchange="loadFile()">
+                        <button class="btn" onclick="document.getElementById('fileInput').click()">Load File</button>
+                        <input type="text" id="filename" placeholder="EQ Name" value="Wavelet custom eq" class="input">
+                        <button class="btn btn-primary" onclick="downloadTxt()">Download</button>
+                    </div>
+                </div>
+
+                <!-- MP3 Player -->
+                <div class="control-card">
+                    <h3>MP3 Player</h3>
+                    <div class="mp3-upload">
+                        <input type="file" id="mp3FileInput" accept=".mp3,.wav,.m4a" style="display: none;">
+                        <button class="btn" onclick="document.getElementById('mp3FileInput').click()">Load MP3</button>
+                        <span id="mp3Status" class="status">No file loaded</span>
+                    </div>
+                    
+                    <div class="mp3-controls">
+                        <div class="playback-controls">
+                            <button class="btn-round" id="playMP3Btn" onclick="toggleMP3Playback()" disabled>▶</button>
+                            <button class="btn-round btn-stop" onclick="stopMP3AndReset()">⏹</button>
+                        </div>
+                        <div class="progress-group">
+                            <span id="mp3CurrentTime" class="time">0:00</span>
+                            <input type="range" id="mp3Progress" min="0" max="100" value="0" 
+                                oninput="seekMP3(this.value)" class="slider progress-slider">
+                            <span id="mp3Duration" class="time">0:00</span>
+                        </div>
+                        <div class="volume-control">
+                            <input type="range" id="mp3VolumeSlider" min="0" max="1" step="0.01" value="0.5" 
+                                oninput="setMP3Volume(this.value)" class="slider slider-small">
+                            <span class="label">Vol</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mp3-info">Move any EQ slider to hear real-time changes</div>
+                </div>
+
+
+                <!-- Frequency Generator -->
+                <div class="control-card">
+                    <h3>Frequency Generator</h3>
+                    <div class="audio-controls">
+                        <div class="playback-controls">
+                            <button class="btn-round" onclick="playFrequency()" id="playBtn">▶</button>
+                            <button class="btn-round btn-stop" onclick="stopFrequency()" id="stopBtn">⏹</button>
+                        </div>
+                        <div class="slider-group">
+                            <input type="range" id="frequencySlider" min="10" max="20000" value="440" 
+                                oninput="updatePlaybackFrequency(this.value)" class="slider">
+                            <span id="currentFreq" class="freq-display">440 Hz</span>
+                        </div>
+                        <div class="volume-control">
+                            <input type="range" id="volumeSlider" min="0" max="0.3" step="0.01" value="0.1"
+                                oninput="setVolume(this.value)" class="slider slider-small">
+                            <span class="label">Vol</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="footer-panel">
+                    <div class="footer-links">
+                        <a href="https://github.com/dev-arun7/eq" target="_blank">View Source</a>
+                        <a href="https://www.linkedin.com/in/dev-arun7/" target="_blank">LinkedIn</a>
+                    </div>
+                    <div class="footer-notice">
+                        This tool works entirely in your browser. No data is collected.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="content-wrapper">
-        <div id="sliders"></div>
-        <div class="output-section">
-            <h3>📋 GraphicEQ Output</h3>
-            <button class="btn" onclick="copyOutput()">Copy</button>
-            <textarea id="output" readonly></textarea>
-        </div>
-    </div>
-
-    <div class="content-wrapper">
-        <p><a href="https://github.com/dev-arun7/eq" target="_blank">🔗 View Source on GitHub</a></p>
-        <p>👤 Follow me on LinkedIn: 
-            <a href="https://www.linkedin.com/in/dev-arun7/" target="_blank">Arun Balakrishnan</a>
-        <p><strong>Notice:</strong> This tool is 100% safe and works only in your browser. No data is collected or uploaded. It's made for EQ text generation only.</p>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Scripts -->
     <script src="js/eq.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/chart.js"></script>
     <script src="js/audio.js"></script>
     <script src="js/mp3-eq.js"></script>
     <script>
-        // Initialize after all scripts are loaded
         document.addEventListener('DOMContentLoaded', () => {
             initChart();
             updateOutput();
