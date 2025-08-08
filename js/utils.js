@@ -74,7 +74,11 @@ function smoothEQ() {
         if (slider) {
             slider.value = smoothedValues[freq];
             values[freq] = smoothedValues[freq];
-            slider.nextElementSibling.textContent = smoothedValues[freq] + " dB";
+            const valueInput = slider.nextElementSibling.querySelector('.value-input');
+            if (valueInput) {
+                valueInput.value = smoothedValues[freq].toFixed(1);
+            }
+            updateEQFilter(freq, smoothedValues[freq]);
         }
     });
     

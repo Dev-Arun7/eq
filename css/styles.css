@@ -1,4 +1,12 @@
-/* Reset and Base Styles */
+/* Volume Control for Audio (Keep for functionality) */
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+}/* Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -20,7 +28,7 @@ body {
     min-height: 100vh;
 }
 
-/* Minimal Header */
+/* Header with Controls */
 .header {
     background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     border-bottom: 1px solid #334155;
@@ -32,16 +40,19 @@ body {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.header-content h1 {
+.header-left h1 {
     font-size: 2.2rem;
     font-weight: 700;
     color: #f1f5f9;
     margin-bottom: 4px;
 }
 
-.header-content p {
+.header-left p {
     font-size: 1rem;
     color: #94a3b8;
     margin-bottom: 2px;
@@ -51,6 +62,17 @@ body {
     font-size: 0.85rem;
     color: #64748b;
     font-style: italic;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.header-input {
+    width: 200px;
 }
 
 /* Main Content */
@@ -108,6 +130,7 @@ body {
 
 .graph-container {
     background: #0f172a;
+    border: 2px solid #334155;
     border-radius: 8px;
     padding: 15px;
     height: 250px;
@@ -221,13 +244,6 @@ body {
     border-color: #3b82f6;
 }
 
-/* File Controls */
-.file-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
 /* Audio Controls */
 .audio-controls {
     display: flex;
@@ -285,10 +301,6 @@ body {
     transform: scale(1.1);
 }
 
-.slider-small {
-    width: 80px;
-}
-
 .slider-group {
     display: flex;
     align-items: center;
@@ -307,12 +319,6 @@ body {
 
 .progress-slider {
     flex: 1;
-}
-
-.volume-control {
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 
 /* Status and Labels */
@@ -334,11 +340,6 @@ body {
     color: #94a3b8;
     min-width: 40px;
     text-align: center;
-}
-
-.label {
-    font-size: 12px;
-    color: #94a3b8;
 }
 
 /* EQ Frequency Sections */
@@ -368,6 +369,22 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.collapse-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.collapse-btn:hover {
+    background: #334155;
+    color: #f1f5f9;
 }
 
 .section-content {
@@ -455,7 +472,7 @@ body {
     color: #f1f5f9;
 }
 
-/* Reset Buttons */
+/* Reset Buttons with Icons */
 .reset-section {
     padding: 6px 16px;
     font-size: 13px;
@@ -469,14 +486,24 @@ body {
 
 .reset-freq {
     padding: 4px 8px;
-    font-size: 11px;
+    font-size: 0;
     background: #ef4444;
     border-radius: 4px;
     margin-left: 8px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .reset-freq:hover {
     background: #dc2626;
+}
+
+.reset-freq::before {
+    content: "↻";
+    font-size: 14px;
 }
 
 /* Output Section */
@@ -593,6 +620,14 @@ body {
     .header-content {
         padding: 0 30px;
     }
+    
+    .header-right {
+        gap: 12px;
+    }
+    
+    .header-input {
+        width: 160px;
+    }
 }
 
 @media (max-width: 1024px) {
@@ -615,6 +650,13 @@ body {
     
     .header-content {
         padding: 0 20px;
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .header-right {
+        justify-content: center;
     }
     
     .freq-section,
@@ -629,7 +671,7 @@ body {
         padding: 20px 0;
     }
     
-    .header-content h1 {
+    .header-left h1 {
         font-size: 1.8rem;
     }
     
@@ -668,9 +710,8 @@ body {
         text-align: left;
     }
     
-    .file-controls,
-    .audio-controls,
-    .mp3-controls {
+    .mp3-controls,
+    .audio-controls {
         gap: 8px;
     }
     
@@ -693,10 +734,20 @@ body {
     .playback-controls {
         justify-content: center;
     }
+    
+    .header-right {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .header-input {
+        width: 100%;
+        max-width: 300px;
+    }
 }
 
 @media (max-width: 480px) {
-    .header-content h1 {
+    .header-left h1 {
         font-size: 1.5rem;
     }
     

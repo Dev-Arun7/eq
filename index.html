@@ -12,9 +12,17 @@
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <h1>GraphicEQ Editor</h1>
-                <p>Professional audio equalizer for Wavelet</p>
-                <div class="author">Created by Arun Balakrishnan</div>
+                <div class="header-left">
+                    <h1>GraphicEQ Editor</h1>
+                    <p>Professional audio equalizer for Wavelet</p>
+                    <div class="author">Created by Arun Balakrishnan</div>
+                </div>
+                <div class="header-right">
+                    <input type="file" id="fileInput" accept=".txt" style="display: none;" onchange="loadFile()">
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">Load File</button>
+                    <input type="text" id="filename" placeholder="EQ Name" value="Wavelet custom eq" class="input header-input">
+                    <button class="btn btn-primary" onclick="downloadTxt()">Download</button>
+                </div>
             </div>
         </header>
 
@@ -49,16 +57,6 @@
                     </div>
                 </div>
 
-                <!-- File Controls -->
-                <div class="control-card">
-                    <div class="file-controls">
-                        <input type="file" id="fileInput" accept=".txt" style="display: none;" onchange="loadFile()">
-                        <button class="btn" onclick="document.getElementById('fileInput').click()">Load File</button>
-                        <input type="text" id="filename" placeholder="EQ Name" value="Wavelet custom eq" class="input">
-                        <button class="btn btn-primary" onclick="downloadTxt()">Download</button>
-                    </div>
-                </div>
-
                 <!-- MP3 Player -->
                 <div class="control-card">
                     <h3>MP3 Player</h3>
@@ -79,16 +77,10 @@
                                 oninput="seekMP3(this.value)" class="slider progress-slider">
                             <span id="mp3Duration" class="time">0:00</span>
                         </div>
-                        <div class="volume-control">
-                            <input type="range" id="mp3VolumeSlider" min="0" max="1" step="0.01" value="0.5" 
-                                oninput="setMP3Volume(this.value)" class="slider slider-small">
-                            <span class="label">Vol</span>
-                        </div>
                     </div>
                     
                     <div class="mp3-info">Move any EQ slider to hear real-time changes</div>
                 </div>
-
 
                 <!-- Frequency Generator -->
                 <div class="control-card">
@@ -102,11 +94,6 @@
                             <input type="range" id="frequencySlider" min="10" max="20000" value="440" 
                                 oninput="updatePlaybackFrequency(this.value)" class="slider">
                             <span id="currentFreq" class="freq-display">440 Hz</span>
-                        </div>
-                        <div class="volume-control">
-                            <input type="range" id="volumeSlider" min="0" max="0.3" step="0.01" value="0.1"
-                                oninput="setVolume(this.value)" class="slider slider-small">
-                            <span class="label">Vol</span>
                         </div>
                     </div>
                 </div>
@@ -131,6 +118,7 @@
     <script src="js/chart.js"></script>
     <script src="js/audio.js"></script>
     <script src="js/mp3-eq.js"></script>
+    <script src="js/undo-redo.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             initChart();
