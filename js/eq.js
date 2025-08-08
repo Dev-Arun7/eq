@@ -112,16 +112,18 @@ sections.forEach((section, sectionIndex) => {
         });
 
         // Two-way binding: input updates slider
-        valInput.addEventListener("input", () => {
-            const newValue = parseFloat(valInput.value);
-            if (newValue >= -20 && newValue <= 20) {
-                const rounded = parseFloat(newValue.toFixed(1));
-                valInput.value = rounded.toFixed(1);
-                slider.value = rounded;
-                values[freq] = rounded;
-                updateOutput();
-                updateEQFilter(freq, rounded); // ADD THIS LINE
-            }
+        valInput.addEventListener("change", () => {
+            let newValue = parseFloat(valInput.value);
+            if (isNaN(newValue)) newValue = 0;
+            if (newValue < -20) newValue = -20;
+            if (newValue > 20) newValue = 20;
+            
+            const rounded = parseFloat(newValue.toFixed(1));
+            valInput.value = rounded.toFixed(1);
+            slider.value = rounded;
+            values[freq] = rounded;
+            updateOutput();
+            updateEQFilter(freq, rounded);
         });
 
 
@@ -195,7 +197,7 @@ function resetSection(sectionIndex) {
 
 function resetAll() {
     document.querySelectorAll('.slider').forEach(slider => {
-        const freq = slider.dataset.freq; // ADD THIS LINE - define freq
+        const freq = parseFloat(slider.dataset.freq); // Convert string to number
         slider.value = 0;
         values[freq] = 0;
         updateEQFilter(freq, 0);

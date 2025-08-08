@@ -5,10 +5,10 @@ let isPlaying = false;
 
 function initAudio() {
     try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        audioContext = mp3AudioContext; // Use same context as MP3
         gainNode = audioContext.createGain();
-        gainNode.connect(audioContext.destination);
-        gainNode.gain.value = 0.1; // Low volume for safety
+        gainNode.connect(eqFilters[0]); // Connect to EQ chain instead of direct to speakers
+        gainNode.gain.value = 0.1;
     } catch (error) {
         console.error('Audio not supported:', error);
     }
